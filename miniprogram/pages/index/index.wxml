@@ -1,0 +1,124 @@
+<view class="page-container {{darkMode ? 'dark' : ''}}">
+  <!-- 顶部 Header 状态栏 -->
+  <view class="app-header">
+    <view class="brand">
+      <text class="brand-icon">🍲</text>
+      <view class="brand-info">
+        <text class="brand-title">火锅涮肉计时器</text>
+        <text class="brand-sub">咕嘟咕嘟 · 掐秒吃肉</text>
+      </view>
+    </view>
+    <view class="header-actions">
+      <!-- 暗黑/亮色模式切换 -->
+      <view class="action-btn" bindtap="toggleDarkMode">
+        <text class="action-emoji">{{darkMode ? '☀️' : '🌙'}}</text>
+      </view>
+      <!-- 清空队列按钮 -->
+      <view wx:if="{{queue.length > 0}}" class="action-btn clear-btn" bindtap="clearQueue">
+        <text class="action-text">全捞出</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 上半部：涮烫队列区 -->
+  <view class="queue-section">
+    <view class="section-bar">
+      <view class="section-title-wrap">
+        <text class="section-label">锅里正在涮</text>
+        <text class="queue-count-badge">{{queue.length}} 样</text>
+      </view>
+      <text wx:if="{{queue.length > 0}}" class="swipe-hint">👈 左滑卡片可删除/捞出</text>
+    </view>
+
+    <!-- 队列为空状态 -->
+    <view wx:if="{{queue.length === 0}}" class="empty-queue">
+      <text class="empty-pot">🍲</text>
+      <text class="empty-title">锅里还空着呢~</text>
+      <text class="empty-desc">从下方点击心仪的菜品，即可开始精准倒计时！</text>
+    </view>
+
+    <!-- 队列列表 -->
+    <scroll-view wx:else scroll-y="true" class="queue-scroll">
+      <view class="queue-list">
+        <view 
+          wx:for="{{queue}}" 
+          wx:key="instanceId" 
+          class="queue-item-wrap {{item.isDone ? 'done-wrap' : ''}}"
+        >
+          <!-- 隐藏在底部的删除操作底色 -->
+          <view class="delete-underlay" bindtap="removeItem" data-id="{{item.instanceId}}">
+            <text class="delete-btn-text">捞出</text>
+          </view>
+
+          <!-- 表面滑动层 -->
+          <view 
+            class="card-surface {{item.isDone ? 'card-done' : ''}}" 
+            style="transform: translateX({{item.offsetX || 0}}px);"
+            bindtouchstart="onTouchStart"
+            bindtouchmove="onTouchMove"
+            bindtouchend="onTouchEnd"
+            data-id="{{item.instanceId}}"
+          >
+            <view class="card-left">
+              <view class="food-avatar" style="background-color: {{item.color}}20; border-color: {{item.color}};">
+                <text class="avatar-icon">{{item.icon}}</text>
+              </view>
+              <view class="food-meta">
+                <text class="food-name">{{item.name}}</text>
+                <text class="food-state {{item.isDone ? 'state-done' : 'state-cooking'}}">
+                  {{item.isDone ? '✨ 涮好啦，快捞！' : '🔥 正在沸腾涮烫中...'}}
+                </text>
+              </view>
+            </view>
+
+            <view class="card-right">
+              <view class="timer-badge {{item.isDone ? 'badge-done' : 'badge-cooking'}}">
+                <text class="timer-digits">{{item.timeLeftStr}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 下半部：食材选择栏 -->
+  <view class="food-section">
+    <!-- 分类横向滚动条 -->
+    <scroll-view scroll-x="true" class="cat-scroll" enable-flex="true">
+      <view class="cat-list">
+        <view 
+          wx:for="{{categories}}" 
+          wx:key="id" 
+          class="cat-tab {{selectedCat === item.id ? 'cat-active' : ''}}"
+          bindtap="onSelectCategory"
+          data-id="{{item.id}}"
+        >
+          <text class="cat-icon">{{item.icon}}</text>
+          <text class="cat-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 菜品网格滚动区 -->
+    <scroll-view scroll-y="true" class="foods-grid-scroll">
+      <view class="foods-grid">
+        <view 
+          wx:for="{{currentFoods}}" 
+          wx:key="id" 
+          class="food-card" 
+          bindtap="onAddFood" 
+          data-food="{{item}}"
+          hover-class="food-card-hover"
+        >
+          <view class="time-pill">
+            <text class="time-text">{{item.duration < 60 ? item.duration + 's' : (item.duration / 60) + 'm'}}</text>
+          </view>
+          <text class="food-emoji">{{item.icon}}</text>
+          <text class="food-title">{{item.name}}</text>
+          <text class="food-tip">{{item.tip || '涮熟即享'}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

@@ -1,0 +1,11 @@
+/* app.wxss 全局样式 */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background-color: #F8FAFC;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+view, text, scroll-view {
+  box-sizing: border-box;
+}

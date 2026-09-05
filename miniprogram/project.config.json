@@ -1,0 +1,14 @@
+{
+  "description": "火锅涮肉计时器小程序版",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "widelyUsed",
+  "appid": "wx9f50c7015e1ff600",
+  "projectname": "hotspotTimer",
+  "miniprogramRoot": "./"
+}
